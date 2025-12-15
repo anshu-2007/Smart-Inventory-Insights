@@ -9,9 +9,19 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
+from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
-app = Flask(__name__)
+import os
+
+app = Flask(__name__, template_folder="templates", static_folder="static")
 CORS(app)
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+# Your existing /analyze endpoint here
+
 
 # Configure Gemini Lite
 genai.configure(api_key=os.getenv("AIzaSyBo4BrYunD_LbbcTBlgT3QZDFZYaJK71wA"))
