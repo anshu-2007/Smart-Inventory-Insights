@@ -169,9 +169,14 @@ Cloud deployment with caching
 
 Analytics & export reports
 
+
+WEB APP LINK : https://nonmotoring-lanette-justifiably.ngrok-free.dev/
+
+
 👤 Author
-Anshu Chowdhury
 Nandini Kalia
+Anshu Chowdhury
+
 
 GenAI Frontiers Hackathon
 Smart Inventory Auditor
