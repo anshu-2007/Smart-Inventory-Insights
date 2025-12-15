@@ -194,7 +194,7 @@ captureBtn.addEventListener("click", async () => {
   loader.classList.remove("hidden"); dashboard.classList.add("hidden");
 
   try {
-    const res = await fetch("http://127.0.0.1:5000/analyze", {
+    const res = await fetch("/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ image: snapshot.toDataURL("image/png") })
@@ -243,6 +243,8 @@ function randomQuote() {
 setInterval(randomQuote, 10000);
 randomQuote();
 </script>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
 </html>

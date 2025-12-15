@@ -3,82 +3,92 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import google.generativeai as genai
 import os, base64, json, re
+
 from inventory import lookup_inventory
 
+# Load environment variables
 load_dotenv()
-app = Flask(__name__)
+
+# ✅ Create Flask app ONCE
+app = Flask(
+    __name__,
+    template_folder="../templates",
+    static_folder="../static"
+)
 CORS(app)
 
-from flask import Flask, render_template, request, jsonify
-from flask_cors import CORS
-import os
-
-app = Flask(__name__, template_folder="templates", static_folder="static")
-CORS(app)
-
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-# Your existing /analyze endpoint here
-
-
-# Configure Gemini Lite
-genai.configure(api_key=os.getenv("AIzaSyBo4BrYunD_LbbcTBlgT3QZDFZYaJK71wA"))
+# ✅ Configure Gemini (use ENV variable)
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 model = genai.GenerativeModel("gemini-2.5-flash-lite")
 
+# ---------------- HOME PAGE ----------------
 @app.route("/")
 def index():
     return render_template("index.html")
 
+# ---------------- ANALYZE API ----------------
 @app.route("/analyze", methods=["POST"])
 def analyze():
     try:
-        # Check if request has JSON (camera) or files (upload)
         files = []
+
+        # 📸 Camera (base64 JSON)
         if request.is_json:
             data = request.get_json()
             image_b64 = data.get("image")
             if not image_b64:
                 return jsonify({"error": "No image found"}), 400
+
             if "," in image_b64:
                 image_b64 = image_b64.split(",")[1]
+
             image_bytes = base64.b64decode(image_b64)
-            files.append(("image.png", image_bytes))
+            files.append(("camera.png", image_bytes))
+
+        # 📁 Upload images
         else:
             upload_files = request.files.getlist("images")
             if not upload_files:
                 return jsonify({"error": "No image uploaded"}), 400
-            files.extend([(f.filename, f.read()) for f in upload_files])
+
+            for f in upload_files:
+                files.append((f.filename, f.read()))
 
         results = []
+
         for fname, image_data in files:
-            # Gemini Lite API call
             prompt = """
-You are a smart inventory auditor. From the image:
+You are a smart inventory auditor.
+From the image:
 1. Identify the product name.
 2. Identify the product condition (Good/Damaged).
-Respond ONLY in JSON with keys: "item", "condition".
-Do not explain or add markdown.
+
+Respond ONLY in JSON:
+{
+  "item": "...",
+  "condition": "..."
+}
 """
-            try:
-                response = model.generate_content([
-                    prompt,
-                    {"inline_data": {"mime_type": "image/png", "data": base64.b64encode(image_data).decode("utf-8")}}
-                ])
-                raw_text = response.text
-                cleaned_text = re.sub(r"```json|```", "", raw_text).strip()
-                result = json.loads(cleaned_text)
-            except Exception as e:
-                print("Gemini API failed:", e)
-                continue  # Skip if API fails
 
-            item_name = result.get("item") or "Unknown Item"
-            condition = result.get("condition") or "Unknown"
+            response = model.generate_content([
+                prompt,
+                {
+                    "inline_data": {
+                        "mime_type": "image/png",
+                        "data": base64.b64encode(image_data).decode()
+                    }
+                }
+            ])
 
-            inventory_data = lookup_inventory(item_name)
-            stock = inventory_data["stock"]
-            threshold = inventory_data["threshold"]
+            cleaned = re.sub(r"```json|```", "", response.text).strip()
+            result = json.loads(cleaned)
+
+            item_name = result.get("item", "Unknown Item")
+            condition = result.get("condition", "Unknown")
+
+            inventory = lookup_inventory(item_name)
+            stock = inventory["stock"]
+            threshold = inventory["threshold"]
 
             if stock == 0:
                 action = "Reorder Required"
@@ -99,5 +109,6 @@ Do not explain or add markdown.
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# ---------------- RUN ----------------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
