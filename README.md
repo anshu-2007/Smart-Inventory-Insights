@@ -1,4 +1,6 @@
 VIDEO LINK OF WEB APP:- https://drive.google.com/drive/folders/1N0QL13J76aCFQOJI_7O2Y-3-cXtHCD4v?usp=sharing
+WEB APP LINK : https://nonmotoring-lanette-justifiably.ngrok-free.dev/
+
 
 🔥 Smart Inventory Auditor
 GenAI Frontiers Hackathon – Gemini API
