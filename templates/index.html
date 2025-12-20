@@ -1,250 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Inventory Auditor</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Inventory Insights</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body class="bg-gradient-to-r from-blue-50 via-white to-blue-50 min-h-screen font-sans">
+  <link rel="icon" href="/Frontend/favicon.ico">
 
-<div class="max-w-6xl mx-auto p-6">
+  <div class="max-w-6xl mx-auto p-6">
 
-  <h1 class="text-4xl font-bold text-center text-blue-700 mb-6">🔥 Smart Inventory Auditor 🔥</h1>
+    <h1 class="text-4xl font-bold text-center text-blue-700 mb-6">🔥 Smart Inventory Insights 🔥</h1>
+    <!-- Real-time Clock & Quote -->
+    <div class="flex justify-between items-center mb-8">
+      <div class="text-xl font-semibold text-gray-700">🕒 <span id="clock">--:--:--</span></div>
+      <div class="text-lg italic text-green-600" id="quote">"Loading motivational quote..."</div>
+    </div>
 
-  <!-- Real-time Clock & Quote -->
-  <div class="flex justify-between items-center mb-8">
-    <div class="text-xl font-semibold text-gray-700">🕒 <span id="clock">--:--:--</span></div>
-    <div class="text-lg italic text-green-600" id="quote">"Loading motivational quote..."</div>
-  </div>
+    <!-- Upload + Camera Section -->
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
 
-  <!-- Upload + Camera Section -->
-  <div class="grid md:grid-cols-2 gap-6 mb-8">
-
-    <!-- Upload Section -->
-    <div class="bg-white p-6 rounded-3xl shadow-xl">
-      <h2 class="text-2xl font-bold mb-4 text-blue-700">📁 Upload Product Images</h2>
-      <input type="file" id="image" class="mb-4 border rounded p-2 w-full" accept="image/*" multiple>
-      <div class="mb-4 flex flex-wrap gap-4 justify-center" id="previewContainer"></div>
-      <button id="analyzeBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold w-full transition">
-        Analyze
-      </button>
-      <div id="loader" class="mt-4 hidden text-center text-blue-600 font-semibold">
-        <svg class="animate-spin h-6 w-6 inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-        </svg>
-        Analyzing...
+      <!-- Upload Section -->
+      <div class="bg-white p-6 rounded-3xl shadow-xl">
+        <h2 class="text-2xl font-bold mb-4 text-blue-700">📁 Upload Product Images</h2>
+        <input type="file" id="image" class="mb-4 border rounded p-2 w-full" accept="image/*" multiple>
+        <div class="mb-4 flex flex-wrap gap-4 justify-center" id="previewContainer"></div>
+        <button id="analyzeBtn"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold w-full transition">
+          Analyze
+        </button>
+        <div id="loader" class="mt-4 hidden text-center text-blue-600 font-semibold">
+          <svg class="animate-spin h-6 w-6 inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+          Analyzing...
+        </div>
       </div>
-    </div>
 
-    <!-- Camera Section -->
-    <div class="bg-white p-6 rounded-3xl shadow-xl">
-      <h2 class="text-2xl font-bold mb-4 text-green-600">📸 Capture Item Image</h2>
-      <video id="camera" autoplay playsinline width="100%" height="240" class="border rounded-lg mb-4"></video>
-      <button id="captureBtn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-bold w-full mb-4">Capture</button>
-      <div id="cameraPreview" class="flex flex-wrap gap-4 justify-center"></div>
-      <canvas id="snapshot" width="320" height="240" style="display:none;"></canvas>
-    </div>
-
-  </div>
-
-  <!-- Result Dashboard -->
-  <div id="dashboard" class="hidden">
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-      <div class="bg-white p-6 rounded-3xl shadow-xl text-center">
-        <h2 class="text-xl font-bold mb-2">Total Items Scanned</h2>
-        <p id="totalItems" class="text-2xl font-bold text-blue-600">0</p>
+      <!-- Camera Section -->
+      <div class="bg-white p-6 rounded-3xl shadow-xl">
+        <h2 class="text-2xl font-bold mb-4 text-green-600">📸 Capture Item Image</h2>
+        <video id="camera" autoplay playsinline width="100%" height="240" class="border rounded-lg mb-4"></video>
+        <button id="captureBtn"
+          class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-bold w-full mb-4">Capture</button>
+        <div id="cameraPreview" class="flex flex-wrap gap-4 justify-center"></div>
+        <canvas id="snapshot" width="320" height="240" style="display:none;"></canvas>
       </div>
-      <div class="bg-white p-6 rounded-3xl shadow-xl text-center">
-        <h2 class="text-xl font-bold mb-2">Items to Reorder</h2>
-        <p id="reorderCount" class="text-2xl font-bold text-red-600">0</p>
+
+    </div>
+
+    <!-- Result Dashboard -->
+    <div id="dashboard" class="hidden">
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="bg-white p-6 rounded-3xl shadow-xl text-center">
+          <h2 class="text-xl font-bold mb-2">Total Items Scanned</h2>
+          <p id="totalItems" class="text-2xl font-bold text-blue-600">0</p>
+        </div>
+        <div class="bg-white p-6 rounded-3xl shadow-xl text-center">
+          <h2 class="text-xl font-bold mb-2">Items to Reorder</h2>
+          <p id="reorderCount" class="text-2xl font-bold text-red-600">0</p>
+        </div>
+        <div class="bg-white p-6 rounded-3xl shadow-xl text-center">
+          <h2 class="text-xl font-bold mb-2">Low Stock Items</h2>
+          <p id="lowStockCount" class="text-2xl font-bold text-yellow-600">0</p>
+        </div>
       </div>
-      <div class="bg-white p-6 rounded-3xl shadow-xl text-center">
-        <h2 class="text-xl font-bold mb-2">Low Stock Items</h2>
-        <p id="lowStockCount" class="text-2xl font-bold text-yellow-600">0</p>
+
+      <!-- History Table -->
+      <div class="bg-white p-6 rounded-3xl shadow-xl mb-6 overflow-x-auto">
+        <h2 class="text-2xl font-bold mb-4 text-gray-700">Scan History</h2>
+        <table class="w-full table-auto text-left border-collapse">
+          <thead>
+            <tr class="bg-gray-200">
+              <th class="px-4 py-2">Item</th>
+              <th class="px-4 py-2">Condition</th>
+              <th class="px-4 py-2">Stock</th>
+              <th class="px-4 py-2">Action</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
       </div>
+
+      <!-- Stock Chart -->
+      <div class="bg-white p-6 rounded-3xl shadow-xl">
+        <h2 class="text-2xl font-bold mb-4 text-gray-700">Stock Overview</h2>
+        <canvas id="stockChart"></canvas>
+      </div>
+
     </div>
+<!-- Upcoming Features Card -->
+<div class="mt-10 p-6 rounded-3xl border-2 border-dashed border-blue-300 bg-blue-50 shadow-inner">
+  <h3 class="text-2xl font-bold text-blue-700 mb-3 flex items-center gap-2">
+    🚀 Upcoming AI Features (Product Roadmap)<span class="ml-2 px-3 py-1 text-xs rounded-full bg-blue-200 text-blue-800">
+  MVP Roadmap
+</span>
 
-    <!-- History Table -->
-    <div class="bg-white p-6 rounded-3xl shadow-xl mb-6 overflow-x-auto">
-      <h2 class="text-2xl font-bold mb-4 text-gray-700">Scan History</h2>
-      <table class="w-full table-auto text-left border-collapse">
-        <thead>
-          <tr class="bg-gray-200">
-            <th class="px-4 py-2">Item</th>
-            <th class="px-4 py-2">Condition</th>
-            <th class="px-4 py-2">Stock</th>
-            <th class="px-4 py-2">Action</th>
-          </tr>
-        </thead>
-        <tbody id="historyBody"></tbody>
-      </table>
-    </div>
+  </h3>
+  <p class="text-gray-700 mb-4">
+    The following features are part of the next development phase and are
+    currently demonstrated using sample data for conceptual clarity.
+  </p>
 
-    <!-- Stock Chart -->
-    <div class="bg-white p-6 rounded-3xl shadow-xl">
-      <h2 class="text-2xl font-bold mb-4 text-gray-700">Stock Overview</h2>
-      <canvas id="stockChart"></canvas>
-    </div>
-
-  </div>
-
+  <ul class="list-disc pl-6 space-y-2">
+    <li class="text-red-600 font-semibold">Predictive stock depletion alerts</li>
+    <li class="text-yellow-600 font-semibold">AI-driven demand forecasting</li>
+    <li class="text-green-600 font-semibold">Automated supplier optimization</li>
+  </ul>
 </div>
 
-<script>
-const imageInput = document.getElementById("image");
-const previewContainer = document.getElementById("previewContainer");
-const analyzeBtn = document.getElementById("analyzeBtn");
-const loader = document.getElementById("loader");
-const dashboard = document.getElementById("dashboard");
-const totalItemsEl = document.getElementById("totalItems");
-const reorderCountEl = document.getElementById("reorderCount");
-const lowStockCountEl = document.getElementById("lowStockCount");
-const historyBody = document.getElementById("historyBody");
-const captureBtn = document.getElementById("captureBtn");
-const video = document.getElementById("camera");
-const snapshot = document.getElementById("snapshot");
-const cameraPreview = document.getElementById("cameraPreview");
 
-let history = [];
-let stockChart;
+    <!-- Predictive Insights Section -->
+    <section id="predictive-insights" class="mb-8 p-6 bg-blue-50 rounded-3xl shadow-inner mt-8">
+      <h2 class="text-2xl font-bold mb-4 text-blue-700">Predictive Stock Insights</h2>
+      <p class="mb-4 text-gray-700">AI predicts which items may run out soon, helping you restock in time.</p>
+      <ul class="list-disc pl-5 space-y-2">
+        <li class="text-red-600 font-semibold">Item A – likely low in 2 days</li>
+        <li class="text-yellow-600 font-semibold">Item B – likely low in 5 days</li>
+        <li class="text-green-600 font-semibold">Item C – fully stocked</li>
+      </ul>
+    </section>
 
-// -------- Dashboard Update --------
-function updateDashboard() {
-  const total = history.length;
-  const reorder = history.filter(i => i.recommended_action.toLowerCase().includes("reorder")).length;
-  const low = history.filter(i => i.recommended_action.toLowerCase().includes("low")).length;
+    <!-- Inventory Dashboard Section -->
+    <section id="inventory-dashboard" class="mb-8 p-6 bg-white rounded-3xl shadow-xl">
+      <h2 class="text-2xl font-bold mb-4 text-gray-700">Inventory Overview</h2>
+      <p class="mb-4 text-gray-600">Visual summary of stock levels and trends.</p>
+      <div class="dashboard-charts space-y-3">
+        <!-- Simple CSS bars -->
+        <div>
+          <div class="flex justify-between mb-1"><span>Item A</span><span>60%</span></div>
+          <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div class="bg-blue-600 h-2.5 rounded-full" style="width: 60%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1"><span>Item B</span><span>80%</span></div>
+          <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div class="bg-blue-600 h-2.5 rounded-full" style="width: 80%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1"><span>Item C</span><span>40%</span></div>
+          <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div class="bg-blue-600 h-2.5 rounded-full" style="width: 40%"></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  totalItemsEl.textContent = total;
-  reorderCountEl.textContent = reorder;
-  lowStockCountEl.textContent = low;
+    <!-- Alerts Section -->
+    <section id="alerts" class="mb-8 p-6 bg-red-50 rounded-3xl shadow-inner border border-red-100">
+      <h2 class="text-2xl font-bold mb-4 text-red-700">Critical Stock Alerts</h2>
+      <p class="mb-4 text-red-600">AI notifies you about items that need urgent restocking.</p>
+      <ul class="list-disc pl-5 space-y-2 text-red-700">
+        <li><strong>Item B</strong> – Stock critically low!</li>
+        <li><strong>Item D</strong> – Stock reaching minimum threshold</li>
+      </ul>
+    </section>
 
-  const labels = history.map(i => i.item);
-  const data = history.map(i => i.stock);
+  </div>
+<!-- AI Disclaimer Card -->
+<div class="mt-6 p-5 rounded-2xl bg-gray-900 text-white shadow-xl">
+  <h4 class="text-lg font-bold mb-2 flex items-center gap-2">
+    ⚠️ AI Implementation Disclosure
+  </h4>
+  <p class="text-sm leading-relaxed text-gray-300">
+    The predictive insights and optimization modules displayed above are
+    currently presented using demo data as part of the MVP roadmap.
+    <br><br>
+    <span class="text-white font-semibold">
+      The core AI functionality — image-based inventory recognition and
+      stock condition analysis — is fully implemented using Google AI
+      (Vision & Gemini APIs) and works in real time.
+    </span>
+  </p>
+</div>
 
-  if (stockChart) stockChart.destroy();
-  const ctx = document.getElementById("stockChart").getContext("2d");
-  stockChart = new Chart(ctx, {
-    type: 'bar',
-    data: { labels: labels, datasets: [{ label: 'Stock', data: data, backgroundColor: 'rgba(59, 130, 246, 0.7)' }] },
-    options: { responsive: true, plugins: { legend: { display: false } } }
-  });
-}
 
-// -------- Preview Images --------
-imageInput.addEventListener("change", () => {
-  previewContainer.innerHTML = "";
-  Array.from(imageInput.files).forEach(file => {
-    const img = document.createElement("img");
-    img.src = URL.createObjectURL(file);
-    img.className = "w-32 h-32 object-contain border rounded";
-    previewContainer.appendChild(img);
-  });
-});
+  <script>
+    const imageInput = document.getElementById("image");
+    const previewContainer = document.getElementById("previewContainer");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const loader = document.getElementById("loader");
+    const dashboard = document.getElementById("dashboard");
+    const totalItemsEl = document.getElementById("totalItems");
+    const reorderCountEl = document.getElementById("reorderCount");
+    const lowStockCountEl = document.getElementById("lowStockCount");
+    const historyBody = document.getElementById("historyBody");
+    const captureBtn = document.getElementById("captureBtn");
+    const video = document.getElementById("camera");
+    const snapshot = document.getElementById("snapshot");
+    const cameraPreview = document.getElementById("cameraPreview");
 
-// -------- Analyze Upload Images --------
-analyzeBtn.addEventListener("click", async () => {
-  if (!imageInput.files.length) { alert("Select at least one image"); return; }
-  loader.classList.remove("hidden"); dashboard.classList.add("hidden");
+    let history = [];
+    let stockChart;
 
-  const formData = new FormData();
-  Array.from(imageInput.files).forEach(f => formData.append("images", f));
+    // -------- Dashboard Update --------
+    function updateDashboard() {
+      const total = history.length;
+      const reorder = history.filter(i => i.recommended_action.toLowerCase().includes("reorder")).length;
+      const low = history.filter(i => i.recommended_action.toLowerCase().includes("low")).length;
 
-  try {
-    const res = await fetch("http://127.0.0.1:5000/analyze", { method: "POST", body: formData });
-    const data = await res.json();
-    loader.classList.add("hidden");
-    if (data.error) { alert(data.error); return; }
-    data.results.forEach(item => history.push(item));
-    historyBody.innerHTML = "";
-    history.forEach(entry => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
+      totalItemsEl.textContent = total;
+      reorderCountEl.textContent = reorder;
+      lowStockCountEl.textContent = low;
+
+      const labels = history.map(i => i.item);
+      const data = history.map(i => i.stock);
+
+      if (stockChart) stockChart.destroy();
+      const ctx = document.getElementById("stockChart").getContext("2d");
+      stockChart = new Chart(ctx, {
+        type: 'bar',
+        data: { labels: labels, datasets: [{ label: 'Stock', data: data, backgroundColor: 'rgba(59, 130, 246, 0.7)' }] },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+    }
+
+    // -------- Preview Images --------
+    imageInput.addEventListener("change", () => {
+      previewContainer.innerHTML = "";
+      Array.from(imageInput.files).forEach(file => {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+        img.className = "w-32 h-32 object-contain border rounded";
+        previewContainer.appendChild(img);
+      });
+    });
+
+    // -------- Analyze Upload Images --------
+    analyzeBtn.addEventListener("click", async () => {
+      if (!imageInput.files.length) { alert("Select at least one image"); return; }
+      loader.classList.remove("hidden"); dashboard.classList.add("hidden");
+
+      const formData = new FormData();
+      Array.from(imageInput.files).forEach(f => formData.append("images", f));
+
+      try {
+        const res = await fetch("http://127.0.0.1:5000/analyze", { method: "POST", body: formData });
+        const data = await res.json();
+        loader.classList.add("hidden");
+        if (data.error) { alert(data.error); return; }
+        data.results.forEach(item => history.push(item));
+        historyBody.innerHTML = "";
+        history.forEach(entry => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
         <td class="border px-4 py-2">${entry.item}</td>
         <td class="border px-4 py-2">${entry.condition}</td>
         <td class="border px-4 py-2">${entry.stock}</td>
         <td class="border px-4 py-2 font-bold ${entry.recommended_action.toLowerCase().includes("reorder") ? "text-red-600" : entry.recommended_action.toLowerCase().includes("low") ? "text-yellow-600" : "text-green-600"}">
           ${entry.recommended_action}
         </td>`;
-      historyBody.appendChild(row);
+          historyBody.appendChild(row);
+        });
+        updateDashboard();
+        dashboard.classList.remove("hidden");
+      } catch (err) { loader.classList.add("hidden"); alert("Backend error"); console.error(err); }
     });
-    updateDashboard();
-    dashboard.classList.remove("hidden");
-  } catch (err) { loader.classList.add("hidden"); alert("Backend error"); console.error(err); }
-});
 
-// -------- Camera Access --------
-navigator.mediaDevices.getUserMedia({ video: true })
-  .then(stream => { video.srcObject = stream; })
-  .catch(err => { alert("Camera access denied!"); console.error(err); });
+    // -------- Camera Access --------
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => { video.srcObject = stream; })
+      .catch(err => { alert("Camera access denied!"); console.error(err); });
 
-// -------- Capture Camera Image --------
-captureBtn.addEventListener("click", async () => {
-  const ctx = snapshot.getContext("2d");
-  ctx.drawImage(video, 0, 0, snapshot.width, snapshot.height);
+    // -------- Capture Camera Image --------
+    captureBtn.addEventListener("click", async () => {
+      const ctx = snapshot.getContext("2d");
+      ctx.drawImage(video, 0, 0, snapshot.width, snapshot.height);
 
-  const img = document.createElement("img");
-  img.src = snapshot.toDataURL("image/png");
-  img.className = "w-32 h-32 object-contain border rounded";
-  cameraPreview.innerHTML = ""; cameraPreview.appendChild(img);
+      const img = document.createElement("img");
+      img.src = snapshot.toDataURL("image/png");
+      img.className = "w-32 h-32 object-contain border rounded";
+      cameraPreview.innerHTML = ""; cameraPreview.appendChild(img);
 
-  loader.classList.remove("hidden"); dashboard.classList.add("hidden");
+      loader.classList.remove("hidden"); dashboard.classList.add("hidden");
 
-  try {
-    const res = await fetch("/analyze", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ image: snapshot.toDataURL("image/png") })
-    });
-    const data = await res.json();
-    loader.classList.add("hidden");
-    if (data.error) { alert(data.error); return; }
-    data.results.forEach(item => history.push(item));
+      try {
+        const res = await fetch("/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: snapshot.toDataURL("image/png") })
+        });
+        const data = await res.json();
+        loader.classList.add("hidden");
+        if (data.error) { alert(data.error); return; }
+        data.results.forEach(item => history.push(item));
 
-    historyBody.innerHTML = "";
-    history.forEach(entry => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
+        historyBody.innerHTML = "";
+        history.forEach(entry => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
         <td class="border px-4 py-2">${entry.item}</td>
         <td class="border px-4 py-2">${entry.condition}</td>
         <td class="border px-4 py-2">${entry.stock}</td>
         <td class="border px-4 py-2 font-bold ${entry.recommended_action.toLowerCase().includes("reorder") ? "text-red-600" : entry.recommended_action.toLowerCase().includes("low") ? "text-yellow-600" : "text-green-600"}">
           ${entry.recommended_action}
         </td>`;
-      historyBody.appendChild(row);
+          historyBody.appendChild(row);
+        });
+        updateDashboard();
+        dashboard.classList.remove("hidden");
+      } catch (err) { loader.classList.add("hidden"); alert("Backend error"); console.error(err); }
     });
-    updateDashboard();
-    dashboard.classList.remove("hidden");
-  } catch (err) { loader.classList.add("hidden"); alert("Backend error"); console.error(err); }
-});
 
-// -------- Real-Time Clock --------
-function updateClock() {
-  const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
-  document.getElementById("clock").textContent = now.toLocaleTimeString();
-}
-setInterval(updateClock, 1000);
-updateClock();
+    // -------- Real-Time Clock --------
+    function updateClock() {
+      const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+      document.getElementById("clock").textContent = now.toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
 
-// -------- Random Motivational Quotes --------
-const quotes = [
-  "Work smarter, not harder! 💪",
-  "Every stock counts! 📦",
-  "Stay organized, stay ahead! 🚀",
-  "Small steps lead to big results! 🌟",
-  "Your inventory, your power! ⚡"
-];
-function randomQuote() {
-  document.getElementById("quote").textContent = quotes[Math.floor(Math.random() * quotes.length)];
-}
-setInterval(randomQuote, 10000);
-randomQuote();
-</script>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    // -------- Random Motivational Quotes --------
+    const quotes = [
+      "Work smarter, not harder! 💪",
+      "Every stock counts! 📦",
+      "Stay organized, stay ahead! 🚀",
+      "Small steps lead to big results! 🌟",
+      "Your inventory, your power! ⚡"
+    ];
+    function randomQuote() {
+      document.getElementById("quote").textContent = quotes[Math.floor(Math.random() * quotes.length)];
+    }
+    setInterval(randomQuote, 10000);
+    randomQuote();
+  </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
+
 </html>
