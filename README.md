@@ -1,4 +1,4 @@
-mart Inventory Insights 🚀
+Smart Inventory Insights 🚀
 AI-Powered Inventory Management Web Application 🤖
 
 Overview 📖
