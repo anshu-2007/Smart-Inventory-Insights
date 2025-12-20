@@ -96,8 +96,8 @@ If the live link is inaccessible, please refer to the demo video for a complete 
 
 Team Members 👥
 Name	Role / Contribution
-Anshu Chowdhury	Lead Developer – Backend, Architecture, AI Integration 💻
-Nandini Kalia	Team Leader – Documentation, Stack Summary, Prompt Engineering 📄
+Anshu Chowdhury	(Team Leader) - Lead Developer – Backend, Architecture, AI Integration 💻
+Nandini Kalia – Documentation, Stack Summary, Prompt Engineering 📄
 Mihir Kumar	Frontend Developer – UI/UX and Dashboard 🎨
 Sonu Gupta	AI Integration & Testing 🤖
 
